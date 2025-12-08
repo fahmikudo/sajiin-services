@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: sajiin-services
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/sajiin_v1
+    username: falcon
+    password: Kosovo!212
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+
+sajiin:
+  jwt:
+    secret: 684633927602e0f5b3479411c347bd3f0704c4c7beb585de76e88007c4685df5
+    expiration-time: 86400000 # 1 day in milliseconds
+    refresh-expiration-time: 604800000 # 7 days in milliseconds
