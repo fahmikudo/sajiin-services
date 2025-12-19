@@ -1,7 +1,7 @@
 package id.sajiin.sajiinservices.config;
 
-import id.sajiin.sajiinservices.identity.user.repository.UserRepository;
-import id.sajiin.sajiinservices.identity.user.repository.query.UserEntityRequest;
+import id.sajiin.sajiinservices.identity.repository.UserRepository;
+import id.sajiin.sajiinservices.identity.repository.query.UserEntityRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,7 +41,7 @@ public class AppConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) {
         return config.getAuthenticationManager();
     }
 }

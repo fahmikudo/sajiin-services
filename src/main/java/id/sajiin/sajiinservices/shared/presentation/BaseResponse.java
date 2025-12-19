@@ -1,10 +1,13 @@
 package id.sajiin.sajiinservices.shared.presentation;
 
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 @JsonPropertyOrder({"success", "message", "data"})
 public class BaseResponse <T> {
-
 
     private boolean success;
 
@@ -21,27 +24,4 @@ public class BaseResponse <T> {
         this.data = data;
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
-    }
 }

@@ -15,6 +15,10 @@ public class MessageConstant {
     public static final String CREATED_MESSAGE = "Created successfully";
     public static final String CREATED_MESSAGE_ID = "Data berhasil dibuat";
 
+    private MessageConstant() {
+        throw new IllegalStateException();
+    }
+
     public static String messageCode(int statusCode) {
         return switch (statusCode) {
             case 201 -> CREATED_MESSAGE;

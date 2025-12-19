@@ -72,7 +72,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) {
         httpSecurity
                 .headers(header -> header.cacheControl(HeadersConfigurer.CacheControlConfig::disable))
                 .csrf(AbstractHttpConfigurer::disable)

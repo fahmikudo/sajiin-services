@@ -1,6 +1,6 @@
 package id.sajiin.sajiinservices.handler;
 
-import id.sajiin.sajiinservices.identity.user.domain.User;
+import id.sajiin.sajiinservices.identity.domain.User;
 import id.sajiin.sajiinservices.security.JwtService;
 import id.sajiin.sajiinservices.security.UserContext;
 import id.sajiin.sajiinservices.security.UserContextHolder;
