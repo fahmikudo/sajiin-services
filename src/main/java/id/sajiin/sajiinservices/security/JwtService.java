@@ -1,8 +1,8 @@
 package id.sajiin.sajiinservices.security;
 
-import id.sajiin.sajiinservices.identity.user.domain.User;
-import id.sajiin.sajiinservices.identity.user.repository.UserRepository;
-import id.sajiin.sajiinservices.identity.user.repository.query.UserEntityRequest;
+import id.sajiin.sajiinservices.identity.domain.User;
+import id.sajiin.sajiinservices.identity.repository.UserRepository;
+import id.sajiin.sajiinservices.identity.repository.query.UserEntityRequest;
 import id.sajiin.sajiinservices.shared.exception.GeneralException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -52,6 +52,7 @@ public class JwtService {
     private User getUserByUsername(String username) {
         UserEntityRequest entityRequest = UserEntityRequest.builder()
                 .username(username)
+                .includeRole(false)
                 .build();
         var user = userRepository.find(entityRequest)
                 .orElseThrow(() -> new GeneralException("User not found"));
