@@ -1,7 +1,7 @@
 package id.sajiin.sajiinservices.shared.specification;
 
-import id.sajiin.sajiinservices.identity.user.domain.User;
-import id.sajiin.sajiinservices.identity.user.repository.query.UserEntityRequest;
+import id.sajiin.sajiinservices.identity.domain.User;
+import id.sajiin.sajiinservices.identity.repository.query.UserEntityRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.data.jpa.domain.Specification;
 

@@ -52,6 +52,7 @@ public class JwtService {
     private User getUserByUsername(String username) {
         UserEntityRequest entityRequest = UserEntityRequest.builder()
                 .username(username)
+                .includeRole(false)
                 .build();
         var user = userRepository.find(entityRequest)
                 .orElseThrow(() -> new GeneralException("User not found"));

@@ -3,9 +3,9 @@ spring:
     name: sajiin-services
 
   datasource:
-    url: jdbc:mysql://localhost:3306/dev_sajiin?useSSL=false&serverTimezone=UTC
-    username: root
-    password: Vulture21
+    url: jdbc:mysql://localhost:3306/sajiin_v1?useSSL=false&serverTimezone=UTC
+    username: falcon
+    password: Kosovo!212
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       maximum-pool-size: 10

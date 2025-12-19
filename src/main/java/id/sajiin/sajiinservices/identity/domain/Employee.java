@@ -45,7 +45,6 @@ public class Employee {
     private String address;
 
     @Column(name = "status")
-    @Enumerated(EnumType.STRING)
     private ActiveStatus status;
 
     @Column(name = "created_at")

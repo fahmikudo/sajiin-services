@@ -38,7 +38,7 @@ public class ShopRepositoryImpl implements ShopRepository {
     public Optional<List<Shop>> find(ShopEntityRequest request) {
         Specification<Shop> specification = buildSpecification(request);
         List<Shop> shops = shopJpaRepository.findAll(specification);
-        if (!shops.isEmpty()) {
+        if (shops.isEmpty()) {
             return Optional.of(Collections.emptyList());
         }
         return Optional.of(shops);

@@ -23,4 +23,5 @@ public class LoginDto {
     private String roleType;
 
     private List<LoginPermissionResponse> permissions;
+    private List<LoginShopResponse> shops;
 }

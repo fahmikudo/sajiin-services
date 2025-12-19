@@ -1,5 +1,6 @@
 package id.sajiin.sajiinservices.store.domain;
 
+import id.sajiin.sajiinservices.shared.model.ActiveStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -72,9 +73,9 @@ public class Shop implements Serializable {
     private Boolean isAvailable;
 
     @Column(name = "status")
-    private String status;
+    private ActiveStatus status;
 
-    @Transient
+    @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "created_at")

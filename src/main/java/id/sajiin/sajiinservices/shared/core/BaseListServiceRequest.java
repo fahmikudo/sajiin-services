@@ -1,7 +1,13 @@
 package id.sajiin.sajiinservices.shared.core;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class BaseListServiceRequest extends BaseServiceRequest {
-    private Boolean isPaginated;
+    private Boolean isPaginated = Boolean.FALSE;
+
+    @Setter
+    @Getter
     private PageEntityRequest pagination;
 
     public Boolean getPaginated() {
@@ -12,11 +18,4 @@ public class BaseListServiceRequest extends BaseServiceRequest {
         isPaginated = paginated;
     }
 
-    public PageEntityRequest getPagination() {
-        return pagination;
-    }
-
-    public void setPagination(PageEntityRequest pagination) {
-        this.pagination = pagination;
-    }
 }

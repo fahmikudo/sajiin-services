@@ -1,6 +1,7 @@
 package id.sajiin.sajiinservices.identity.service.impl;
 
 import id.sajiin.sajiinservices.identity.domain.*;
+import id.sajiin.sajiinservices.identity.model.dto.AuthShopDto;
 import id.sajiin.sajiinservices.identity.repository.EmployeeRepository;
 import id.sajiin.sajiinservices.identity.repository.RoleRepository;
 import id.sajiin.sajiinservices.identity.repository.query.EmployeeEntityRequest;
@@ -15,6 +16,10 @@ import id.sajiin.sajiinservices.identity.repository.query.UserEntityRequest;
 import id.sajiin.sajiinservices.identity.service.AuthLoginService;
 import id.sajiin.sajiinservices.security.JwtService;
 import id.sajiin.sajiinservices.shared.exception.GeneralException;
+import id.sajiin.sajiinservices.store.model.dto.ShopDto;
+import id.sajiin.sajiinservices.store.model.request.ListShopRequest;
+import id.sajiin.sajiinservices.store.model.response.ListShopResponse;
+import id.sajiin.sajiinservices.store.service.ListShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,6 +42,8 @@ public class AuthLoginServiceImpl implements AuthLoginService {
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
+    private final ListShopService listShopService;
+
     @Override
     public AuthLoginResponse execute(AuthLoginRequest request) throws GeneralException {
         validateRequest(request);
@@ -49,8 +56,7 @@ public class AuthLoginServiceImpl implements AuthLoginService {
 
         Role roleData = getRoleData(userData.getRole().getId());
 
-        getShopsByUserLogin(userData);
-
+        List<AuthShopDto> authShopDtos = getDataShops(userData);
         List<AuthPermissionDto> authPermissionDtos = getRolePermissionByRoleId(roleData.getId());
 
         String accessToken = jwtService.generateToken(userData.getUsername());
@@ -67,16 +73,50 @@ public class AuthLoginServiceImpl implements AuthLoginService {
                 .roleName(roleData.getRoleName())
                 .roleType(roleData.getType())
                 .permissions(authPermissionDtos)
+                .shops(authShopDtos)
                 .build();
     }
 
-    private void getShopsByUserLogin(User userData) {
+    private List<AuthShopDto> getDataShops(User userData) {
+        List<AuthShopDto> shopDtos;
         if (userData.getOwnerId() != null) {
             Employee employee = getEmployeeById(userData.getOwnerId());
-
+            ListShopRequest listShopRequest = ListShopRequest.builder()
+                    .id(employee.getShopId())
+                    .build();
+            ListShopResponse shopResponse = listShopService.execute(listShopRequest);
+            shopDtos = constructAuthShopDtos(shopResponse.getShops());
         } else {
-            // do fetch shops by user id
+            ListShopRequest listShopRequest = ListShopRequest.builder()
+                    .userId(userData.getId())
+                    .build();
+            ListShopResponse shopResponse = listShopService.execute(listShopRequest);
+            shopDtos = constructAuthShopDtos(shopResponse.getShops());
         }
+        return shopDtos;
+    }
+
+    private List<AuthShopDto> constructAuthShopDtos(List<ShopDto> shopDtos) {
+        List<AuthShopDto> authShopDtos = new ArrayList<>();
+        for (ShopDto shopDto : shopDtos) {
+            AuthShopDto authShopDto = new AuthShopDto(
+                    shopDto.id(),
+                    shopDto.shopId(),
+                    shopDto.name(),
+                    shopDto.email(),
+                    shopDto.location(),
+                    shopDto.phone(),
+                    shopDto.openDay(),
+                    shopDto.closeDay(),
+                    shopDto.openTime(),
+                    shopDto.closeTime(),
+                    shopDto.isNonFnb(),
+                    shopDto.isDigitalOrderActive(),
+                    shopDto.isDigitalMenuActive()
+            );
+            authShopDtos.add(authShopDto);
+        }
+        return authShopDtos;
     }
 
     private Employee getEmployeeById(Long ownerId) {
