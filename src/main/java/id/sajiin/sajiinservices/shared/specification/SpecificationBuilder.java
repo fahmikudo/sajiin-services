@@ -46,24 +46,74 @@ public class SpecificationBuilder <T> {
      * Build query configuration specification (distinct, joins)
      */
     private Specification<T> buildQueryConfig(Object request) {
-        QueryConfig config = request.getClass().getAnnotation(QueryConfig.class);
-        if (config == null) {
-            return Specification.where((root, query, criteriaBuilder) -> null);
-        }
-
         return (root, query, criteriaBuilder) -> {
-            // Apply distinct
-            if (config.distinct()) {
-                query.distinct(true);
+            // Process @QueryConfig annotation joins (static joins)
+            QueryConfig config = request.getClass().getAnnotation(QueryConfig.class);
+            if (config != null) {
+                if (config.distinct()) {
+                    query.distinct(true);
+                }
+                for (Join joinConfig : config.joins()) {
+                    applyJoin(root, query, joinConfig);
+                }
             }
 
-            // Apply joins
-            for (Join joinConfig : config.joins()) {
-                applyJoin(root, query, joinConfig);
+            // Process @JoinControl field annotations (dynamic joins)
+            for (Field field : getAllFields(request.getClass())) {
+                JoinControl joinControl = field.getAnnotation(JoinControl.class);
+                if (joinControl != null && shouldApplyFieldJoin(field, request)) {
+                    applyFieldJoin(root, query, joinControl);
+                }
             }
 
             return null;
         };
+    }
+
+    /**
+     * Check if a field-controlled join should be applied
+     */
+    private boolean shouldApplyFieldJoin(Field field, Object request) {
+        if (field.getType() != boolean.class && field.getType() != Boolean.class) {
+            return false;
+        }
+
+        try {
+            if (!field.canAccess(request)) {
+                field.setAccessible(true);
+            }
+            Object value = field.get(request);
+            return value instanceof Boolean && (Boolean) value;
+        } catch (IllegalAccessException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Apply a field-controlled join configuration
+     */
+    private void applyFieldJoin(Root<T> root, CriteriaQuery<?> query, JoinControl joinControl) {
+        if (joinControl.path().isBlank()) {
+            throw new IllegalArgumentException("Join path must not be blank");
+        }
+
+        String[] pathParts = joinControl.path().split("\\.");
+        jakarta.persistence.criteria.JoinType jpaJoinType = convertJoinType(joinControl.type());
+        boolean countQuery = isCountQuery(query);
+
+        if (joinControl.fetch() && !countQuery) {
+            // Use fetch join
+            FetchParent<?, ?> current = root;
+            for (String part : pathParts) {
+                current = current.fetch(part, jpaJoinType);
+            }
+        } else {
+            // Use regular join
+            From<?, ?> current = root;
+            for (String part : pathParts) {
+                current = current.join(part, jpaJoinType);
+            }
+        }
     }
 
     /**
