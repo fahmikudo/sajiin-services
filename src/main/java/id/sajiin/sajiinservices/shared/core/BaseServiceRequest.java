@@ -7,5 +7,6 @@ import lombok.Setter;
 @Getter
 public abstract class BaseServiceRequest {
     private Long userId;
+    private Long shopId;
 
 }

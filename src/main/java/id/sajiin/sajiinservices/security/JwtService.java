@@ -4,6 +4,7 @@ import id.sajiin.sajiinservices.identity.domain.User;
 import id.sajiin.sajiinservices.identity.repository.UserRepository;
 import id.sajiin.sajiinservices.identity.repository.query.UserEntityRequest;
 import id.sajiin.sajiinservices.shared.exception.GeneralException;
+import id.sajiin.sajiinservices.shared.util.CollectionUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -15,9 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Component
@@ -39,14 +38,41 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
+    public Set<Long> extractShopIds(String token) {
+        Claims claims = extractAllClaims(token);
+        List<?> shopIdsList = claims.get("shopIds", List.class);
+        if (CollectionUtil.isNotNullAndNotEmpty(shopIdsList)) {
+            Set<Long> result = new LinkedHashSet<>();
+            for (Object o : shopIdsList) {
+                if (o == null) continue;
+                if (o instanceof Number number) {
+                    result.add(number.longValue());
+                } else {
+                    try {
+                        result.add(Long.parseLong(o.toString()));
+                    } catch (NumberFormatException ignored) {
+                        return Collections.emptySet();
+                    }
+                }
+            }
+            return result;
+        }
+        return Collections.emptySet();
+    }
+
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(String username) {
+    public String generateToken(String username, Set<Long> shopIds) {
         User userByEmail = getUserByUsername(username);
-        return generateToken(new HashMap<>(), userByEmail);
+        Map<String, Object> extraClaims = new HashMap<>();
+        if (CollectionUtil.isNotNullAndNotEmpty(shopIds)) {
+            extraClaims.put("shopIds", shopIds);
+        }
+        return generateToken(extraClaims, userByEmail);
     }
 
     private User getUserByUsername(String username) {

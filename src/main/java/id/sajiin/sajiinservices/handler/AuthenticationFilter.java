@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,6 +24,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class AuthenticationFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
         if (request.getServletPath().contains("/api/auth/")) {
             filterChain.doFilter(request, response);
             return;
@@ -53,6 +55,8 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
                 if (jwtService.isTokenValid(jwt, userDetails)) {
+                    Set<Long> shopIds = jwtService.extractShopIds(jwt);
+
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -64,9 +68,9 @@ public class AuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
 
                     User user = (User) userDetails;
-
                     UserContext userContext = new UserContext();
                     userContext.setUserId(user.getId());
+                    userContext.setShopIds(shopIds);
 
                     UserContextHolder.set(userContext);
                 }
