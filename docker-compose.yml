@@ -5,6 +5,8 @@ services:
     build:
       context: .
     container_name: sajiin-services
+    command: tail -f /dev/null
+    tty: true
     env_file:
       - .env
     environment:
