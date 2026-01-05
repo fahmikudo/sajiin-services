@@ -16,7 +16,7 @@ RUN apk add --no-cache curl
 
 COPY --from=build /workspace/target/*.jar app.jar
 
-EXPOSE 8600
+EXPOSE 9100
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s \
   CMD curl -fsS http://localhost:8600/actuator/health || exit 1
