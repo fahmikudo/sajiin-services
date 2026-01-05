@@ -144,4 +144,8 @@ public class JwtService {
         return new Date(System.currentTimeMillis() + expiration);
     }
 
+    public Long getExpiryIn() {
+        return calculateExpirationDate(expirationTime).getTime();
+    }
+
 }

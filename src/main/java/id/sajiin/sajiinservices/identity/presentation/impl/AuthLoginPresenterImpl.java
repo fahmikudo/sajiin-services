@@ -27,6 +27,7 @@ public class AuthLoginPresenterImpl implements AuthLoginPresenter {
         var loginDto = LoginResponse.builder()
                 .accessToken(serviceResponse.getAccessToken())
                 .refreshToken(serviceResponse.getRefreshToken())
+                .expiredAt(serviceResponse.getExpiredAt())
                 .userId(serviceResponse.getUserId())
                 .username(serviceResponse.getUsername())
                 .email(serviceResponse.getEmail())

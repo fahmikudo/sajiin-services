@@ -61,10 +61,12 @@ public class AuthLoginServiceImpl implements AuthLoginService {
 
         String accessToken = jwtService.generateToken(userData.getUsername(), shopIds);
         String refreshToken = jwtService.generateRefreshToken(userData);
+        Long expiredAt = jwtService.getExpiryIn();
 
         return LoginResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .expiredAt(expiredAt)
                 .userId(userData.getId())
                 .username(userData.getUsername())
                 .email(userData.getEmail())
