@@ -1,6 +1,6 @@
 package id.sajiin.sajiinservices.identity.presentation.request;
 
-public record LoginRequest (
+public record AuthLoginRequest(
         String username,
         String password
 ) {

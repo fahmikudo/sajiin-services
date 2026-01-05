@@ -2,9 +2,10 @@ package id.sajiin.sajiinservices.identity.presentation.impl;
 
 import id.sajiin.sajiinservices.identity.model.dto.AuthPermissionDto;
 import id.sajiin.sajiinservices.identity.model.dto.AuthShopDto;
-import id.sajiin.sajiinservices.identity.model.response.AuthLoginResponse;
+import id.sajiin.sajiinservices.identity.model.response.LoginResponseDto;
 import id.sajiin.sajiinservices.identity.presentation.AuthLoginPresenter;
-import id.sajiin.sajiinservices.identity.presentation.response.LoginDto;
+import id.sajiin.sajiinservices.identity.model.dto.LoginDto;
+import id.sajiin.sajiinservices.identity.presentation.response.AuthLoginResponse;
 import id.sajiin.sajiinservices.identity.presentation.response.LoginPermissionResponse;
 import id.sajiin.sajiinservices.identity.presentation.response.LoginResponse;
 import id.sajiin.sajiinservices.identity.presentation.response.LoginShopResponse;
@@ -19,11 +20,11 @@ import java.util.List;
 public class AuthLoginPresenterImpl implements AuthLoginPresenter {
 
     @Override
-    public LoginResponse present(AuthLoginResponse serviceResponse) throws GeneralException {
+    public AuthLoginResponse present(LoginResponseDto serviceResponse) throws GeneralException {
         var permissions = serviceResponse.getPermissions();
         var authPermissions = constructPermissionResponses(permissions);
         var authShops = constructShopResponses(serviceResponse.getShops());
-        var loginDto = LoginDto.builder()
+        var loginDto = LoginResponse.builder()
                 .accessToken(serviceResponse.getAccessToken())
                 .refreshToken(serviceResponse.getRefreshToken())
                 .userId(serviceResponse.getUserId())
@@ -37,7 +38,7 @@ public class AuthLoginPresenterImpl implements AuthLoginPresenter {
                 .shops(authShops)
                 .build();
 
-        var response = new LoginResponse();
+        var response = new AuthLoginResponse();
         response.setSuccess(Boolean.TRUE);
         response.setData(loginDto);
         response.setMessage(MessageConstant.messageCode(HttpStatus.OK.value()));

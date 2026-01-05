@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class AuthLoginResponse extends BaseServiceResponse {
+public class LoginResponseDto extends BaseServiceResponse {
 
     private String accessToken;
     private String refreshToken;

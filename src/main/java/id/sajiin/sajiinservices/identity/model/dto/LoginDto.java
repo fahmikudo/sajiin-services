@@ -1,5 +1,7 @@
-package id.sajiin.sajiinservices.identity.presentation.response;
+package id.sajiin.sajiinservices.identity.model.dto;
 
+import id.sajiin.sajiinservices.identity.presentation.response.LoginPermissionResponse;
+import id.sajiin.sajiinservices.identity.presentation.response.LoginShopResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

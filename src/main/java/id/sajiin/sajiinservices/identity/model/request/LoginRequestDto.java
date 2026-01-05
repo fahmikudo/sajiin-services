@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AuthLoginRequest extends BaseServiceRequest {
+public class LoginRequestDto extends BaseServiceRequest {
 
     private String username;
     private String password;

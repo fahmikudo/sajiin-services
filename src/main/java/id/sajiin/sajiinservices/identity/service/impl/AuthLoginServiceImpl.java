@@ -9,8 +9,8 @@ import id.sajiin.sajiinservices.identity.repository.query.RoleEntityRequest;
 import id.sajiin.sajiinservices.identity.repository.RolePermissionRepository;
 import id.sajiin.sajiinservices.identity.repository.query.RolePermissionEntityRequest;
 import id.sajiin.sajiinservices.identity.model.dto.AuthPermissionDto;
-import id.sajiin.sajiinservices.identity.model.request.AuthLoginRequest;
-import id.sajiin.sajiinservices.identity.model.response.AuthLoginResponse;
+import id.sajiin.sajiinservices.identity.model.request.LoginRequestDto;
+import id.sajiin.sajiinservices.identity.model.response.LoginResponseDto;
 import id.sajiin.sajiinservices.identity.repository.UserRepository;
 import id.sajiin.sajiinservices.identity.repository.query.UserEntityRequest;
 import id.sajiin.sajiinservices.identity.service.AuthLoginService;
@@ -43,7 +43,7 @@ public class AuthLoginServiceImpl implements AuthLoginService {
     private final ListShopService listShopService;
 
     @Override
-    public AuthLoginResponse execute(AuthLoginRequest request) throws GeneralException {
+    public LoginResponseDto execute(LoginRequestDto request) throws GeneralException {
         validateRequest(request);
         User userData = getUserData(request);
 
@@ -62,7 +62,7 @@ public class AuthLoginServiceImpl implements AuthLoginService {
         String accessToken = jwtService.generateToken(userData.getUsername(), shopIds);
         String refreshToken = jwtService.generateRefreshToken(userData);
 
-        return AuthLoginResponse.builder()
+        return LoginResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .userId(userData.getId())
@@ -170,7 +170,7 @@ public class AuthLoginServiceImpl implements AuthLoginService {
         return role.get().getFirst();
     }
 
-    private User getUserData(AuthLoginRequest request) {
+    private User getUserData(LoginRequestDto request) {
         UserEntityRequest entityRequest = UserEntityRequest.builder()
                 .username(request.getUsername())
                 .build();
@@ -181,7 +181,7 @@ public class AuthLoginServiceImpl implements AuthLoginService {
         return users.get().getFirst();
     }
 
-    private void validateRequest(AuthLoginRequest request) {
+    private void validateRequest(LoginRequestDto request) {
         if (request == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Request cannot be null");
         }

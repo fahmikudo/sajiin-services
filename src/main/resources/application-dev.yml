@@ -2,6 +2,8 @@ server:
   port: 8600
 
 spring:
+  profiles:
+    active: dev
   application:
     name: sajiin-services
 
@@ -21,6 +23,7 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
+
 
 sajiin:
   server-url: http://localhost:8600

@@ -28,7 +28,6 @@ import java.util.List;
 public class WebSecurityConfig {
 
     private static final String[] WHITE_LIST_URL = {
-            "/test/**",
             "/api/auth/**",
             "/v2/api-docs",
             "/v3/api-docs",
@@ -40,6 +39,7 @@ public class WebSecurityConfig {
             "/swagger-ui/**",
             "/webjars/**",
             "/swagger-ui.html",
+            "/actuator/**"
     };
 
     private final AuthenticationFilter authenticationFilter;

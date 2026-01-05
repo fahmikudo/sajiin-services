@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  sajiin-services:
+    build:
+      context: .
+    container_name: sajiin-services
+    env_file:
+      - .env
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-none}
+      SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL:-true}
+      SAJIIN_SERVER_URL: ${SAJIIN_SERVER_URL:-http://localhost:8600}
+      SAJIIN_JWT_SECRET: ${SAJIIN_JWT_SECRET}
+      SAJIIN_JWT_EXPIRATION_TIME: ${SAJIIN_JWT_EXPIRATION_TIME:-86400000}
+      SAJIIN_JWT_REFRESH_EXPIRATION_TIME: ${SAJIIN_JWT_REFRESH_EXPIRATION_TIME:-604800000}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "${APP_PORT:-8600}:8600"
