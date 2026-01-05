@@ -16,6 +16,6 @@ public class BizparEntityRequest extends BaseEntityRequest {
     private Long id;
 
     @QueryField(operator = QueryOperator.LIKE, ignoreCase = true)
-    private String likeValue;
+    private String value;
 
 }

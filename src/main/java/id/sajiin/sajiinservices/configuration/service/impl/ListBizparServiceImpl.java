@@ -37,7 +37,7 @@ public class ListBizparServiceImpl implements ListBizparService {
         BizparEntityRequest entityRequest = new BizparEntityRequest();
         entityRequest.setPageNumber(request.getPagination().getPage() - 1);
         entityRequest.setPageSize(request.getPagination().getSize());
-        entityRequest.setLikeValue(request.getSearch());
+        entityRequest.setValue(request.getSearch());
 
         Page<Bizpar> bizpars = bizparRepository.findWithPagination(entityRequest);
 

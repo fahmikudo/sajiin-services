@@ -1,8 +1,12 @@
 package id.sajiin.sajiinservices.configuration.controller;
 
+import id.sajiin.sajiinservices.configuration.model.request.GetBizparRequestDto;
 import id.sajiin.sajiinservices.configuration.model.request.ListBizparRequest;
+import id.sajiin.sajiinservices.configuration.presentation.GetBizparPresentation;
 import id.sajiin.sajiinservices.configuration.presentation.ListBizparPresentation;
+import id.sajiin.sajiinservices.configuration.presentation.response.GetBizparResponse;
 import id.sajiin.sajiinservices.configuration.presentation.response.GetListBizparResponse;
+import id.sajiin.sajiinservices.configuration.service.GetBizparService;
 import id.sajiin.sajiinservices.configuration.service.ListBizparService;
 import id.sajiin.sajiinservices.identity.presentation.response.AuthLoginResponse;
 import id.sajiin.sajiinservices.security.UserContext;
@@ -27,6 +31,8 @@ public class BizparController {
 
     private final ListBizparService listBizparService;
     private final ListBizparPresentation listBizparPresentation;
+    private final GetBizparService getBizparService;
+    private final GetBizparPresentation getBizparPresentation;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
@@ -63,6 +69,43 @@ public class BizparController {
 
         var serviceResponse = listBizparService.execute(serviceRequest);
         var response = listBizparPresentation.present(serviceResponse);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(
+            description = "Get Bizpar by ID Endpoint",
+            summary = "Retrieve a single bizpar entry by its ID",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Success",
+                            content = @Content(schema = @Schema(implementation = GetBizparResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Invalid Credentials",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    examples = @ExampleObject(value = "{\"success\":false,\"message\":\"Failed\",\"errors\":[\"Invalid username or password\"]}"))),
+                    @ApiResponse(responseCode = "400", description = "Invalid Request",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    examples = @ExampleObject(value = "{\"success\":false,\"message\":\"Failed\",\"errors\":[\"Invalid request parameter\"]}"))),
+                    @ApiResponse(responseCode = "404", description = "Data not found",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    examples = @ExampleObject(value = "{\"success\":false,\"message\":\"Failed\",\"errors\":[\"Data not found\"]}"))),
+                    @ApiResponse(responseCode = "500", description = "An unexpected error occurred on the server. Please try again later or contact support if the issue persists",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorResponse.class),
+                                    examples = @ExampleObject(value = "{\"success\":false,\"message\":\"Failed\",\"errors\":[\"An unexpected error occurred on the server\"]}"))),
+            }
+    )
+    public ResponseEntity<GetBizparResponse> getBizparById(@PathVariable Long id) {
+        UserContext userContext = UserContextHolder.get();
+        GetBizparRequestDto serviceRequest = new GetBizparRequestDto();
+        serviceRequest.setUserId(userContext.getUserId());
+        serviceRequest.setId(id);
+
+        var serviceResponse = getBizparService.execute(serviceRequest);
+        var response = getBizparPresentation.present(serviceResponse);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
