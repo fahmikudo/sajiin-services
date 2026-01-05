@@ -1,15 +1,13 @@
 FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /workspace
 
-# Copy parent pom for dependency resolution
-COPY pom.xml ./
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+RUN chmod +x mvnw && ./mvnw -q dependency:go-offline
 
-RUN apk add --no-cache maven && \
-    mvn -f pom.xml -N install dependency:go-offline
-
-COPY src ./src
-
-RUN mvn -DskipTests clean package
+COPY src src
+RUN ./mvnw -q -DskipTests clean package
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app

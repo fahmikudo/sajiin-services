@@ -1,33 +1,31 @@
 server:
-  port: 8600
+  port: ${APP_PORT:8600}
 
 spring:
-  profiles:
-    active: dev
   application:
-    name: sajiin-services
+    name: ${APP_NAME:sajiin-services}
 
   datasource:
-    url: jdbc:mysql://localhost:3306/sajiin_v1?useSSL=false&serverTimezone=UTC
-    username: root
-    password: Kosovo212
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/sajiin_v1?useSSL=false&serverTimezone=UTC}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
-      connection-timeout: 30000
-      idle-timeout: 600000
-      max-lifetime: 1800000
+      maximum-pool-size: ${SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE:10}
+      minimum-idle: ${SPRING_DATASOURCE_HIKARI_MINIMUM_IDLE:5}
+      connection-timeout: ${SPRING_DATASOURCE_HIKARI_CONNECTION_TIMEOUT:30000}
+      idle-timeout: ${SPRING_DATASOURCE_HIKARI_IDLE_TIMEOUT:600000}
+      max-lifetime: ${SPRING_DATASOURCE_HIKARI_MAX_LIFETIME:1800000}
 
   jpa:
     hibernate:
-      ddl-auto: none
-    show-sql: true
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:none}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
 
 
 sajiin:
-  server-url: http://localhost:8600
+  server-url: ${SAJIIN_SERVER_URL:http://localhost:8600}
   jwt:
-    secret: 684633927602e0f5b3479411c347bd3f0704c4c7beb585de76e88007c4685df5
-    expiration-time: 86400000 # 1 day in milliseconds
-    refresh-expiration-time: 604800000 # 7 days in milliseconds
+    secret: ${SAJIIN_JWT_SECRET:changeme}
+    expiration-time: ${SAJIIN_JWT_EXPIRATION_TIME:86400000}
+    refresh-expiration-time: ${SAJIIN_JWT_REFRESH_EXPIRATION_TIME:604800000}
