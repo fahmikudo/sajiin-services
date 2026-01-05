@@ -27,7 +27,7 @@ public class ListBizparServiceImpl implements ListBizparService {
     public ListBizparResponse execute(ListBizparRequest request) throws GeneralException {
         validateRequest(request);
         ListBizparResponse response = null;
-        if (request.getPaginated()) {
+        if (request.getPaginated().equals(Boolean.TRUE)) {
             response = getListBizparWithPagination(request);
         }
         return response;
