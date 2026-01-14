@@ -6,7 +6,7 @@ spring:
     name: sajiin-services
 
   datasource:
-    url: jdbc:mysql://localhost:3306/sajiin_v1?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/sajiin_v1?useSSL=false&serverTimezone=Asia/Jakarta
     username: root
     password: Kosovo212
     driver-class-name: com.mysql.cj.jdbc.Driver

@@ -2,6 +2,7 @@ package id.sajiin.sajiinservices.configuration.service.impl;
 
 import id.sajiin.sajiinservices.configuration.domain.Bizpar;
 import id.sajiin.sajiinservices.configuration.model.dto.BizparDto;
+import id.sajiin.sajiinservices.configuration.model.mapper.BizparMapper;
 import id.sajiin.sajiinservices.configuration.model.request.ListBizparRequest;
 import id.sajiin.sajiinservices.configuration.model.response.ListBizparResponse;
 import id.sajiin.sajiinservices.configuration.repository.BizparRepository;
@@ -22,6 +23,7 @@ import java.util.List;
 public class ListBizparServiceImpl implements ListBizparService {
 
     private final BizparRepository bizparRepository;
+    private final BizparMapper bizparMapper;
 
     @Override
     public ListBizparResponse execute(ListBizparRequest request) throws GeneralException {
@@ -54,22 +56,8 @@ public class ListBizparServiceImpl implements ListBizparService {
 
     private List<BizparDto> constructToBizparDtoList(List<Bizpar> bizparList) {
         return bizparList.stream()
-                .map(this::constructToBizparDto)
+                .map(bizparMapper::toDto)
                 .toList();
-    }
-
-    private BizparDto constructToBizparDto(Bizpar bizpar) {
-        return BizparDto.builder()
-                .id(bizpar.getId())
-                .key(bizpar.getKey())
-                .value(bizpar.getValue())
-                .type(bizpar.getType())
-                .description(bizpar.getDescription())
-                .createdAt(bizpar.getCreatedAt())
-                .createdBy(bizpar.getCreatedBy())
-                .updatedAt(bizpar.getUpdatedAt())
-                .updatedBy(bizpar.getUpdatedBy())
-                .build();
     }
 
     private void validateRequest(ListBizparRequest request) {

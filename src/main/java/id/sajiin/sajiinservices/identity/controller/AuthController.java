@@ -1,11 +1,11 @@
 package id.sajiin.sajiinservices.identity.controller;
 
+import id.sajiin.sajiinservices.identity.model.mapper.AuthMapper;
 import id.sajiin.sajiinservices.identity.model.request.LoginRequestDto;
-import id.sajiin.sajiinservices.identity.presentation.AuthLoginPresenter;
 import id.sajiin.sajiinservices.identity.presentation.request.AuthLoginRequest;
 import id.sajiin.sajiinservices.identity.presentation.response.AuthLoginResponse;
-import id.sajiin.sajiinservices.identity.presentation.response.LoginResponse;
 import id.sajiin.sajiinservices.identity.service.AuthLoginService;
+import id.sajiin.sajiinservices.shared.constant.MessageConstant;
 import id.sajiin.sajiinservices.shared.presentation.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthLoginService authLoginService;
-    private final AuthLoginPresenter authLoginPresenter;
+    private final AuthMapper authMapper;
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     @Operation(
@@ -65,7 +65,10 @@ public class AuthController {
 
         var entityResponse = authLoginService.execute(authLoginEntityRequest);
 
-        var response = authLoginPresenter.present(entityResponse);
+        AuthLoginResponse response = new AuthLoginResponse();
+        response.setSuccess(true);
+        response.setMessage(MessageConstant.messageCode(HttpStatus.OK.value()));
+        response.setData(authMapper.toLoginResponse(entityResponse));
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
