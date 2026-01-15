@@ -1,11 +1,13 @@
 package id.sajiin.sajiinservices.identity.repository.impl;
 
-import id.sajiin.sajiinservices.identity.repository.query.RoleEntityRequest;
 import id.sajiin.sajiinservices.identity.domain.Role;
-import id.sajiin.sajiinservices.identity.repository.jpa.RoleJpaRepository;
 import id.sajiin.sajiinservices.identity.repository.RoleRepository;
+import id.sajiin.sajiinservices.identity.repository.jpa.RoleJpaRepository;
+import id.sajiin.sajiinservices.identity.repository.query.RoleEntityRequest;
 import id.sajiin.sajiinservices.shared.specification.SpecificationBuilder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +48,13 @@ public class RoleRepositoryImpl implements RoleRepository {
 
     @Override
     public Page<Role> findWithPagination(RoleEntityRequest request) {
-        return null;
+        PageRequest pageRequest = PageRequest.of(request.getPageNumber(), request.getPageSize());
+        Specification<Role> specification = builderSpecification(request);
+        Page<Role> rolePage = roleJpaRepository.findAll(specification, pageRequest);
+        if (rolePage.isEmpty()) {
+            return Page.empty();
+        }
+        return new PageImpl<>(rolePage.getContent(), pageRequest, rolePage.getTotalElements());
     }
 
     public Specification<Role> builderSpecification(RoleEntityRequest request) {
