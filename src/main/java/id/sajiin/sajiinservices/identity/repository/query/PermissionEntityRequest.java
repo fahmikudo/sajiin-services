@@ -3,9 +3,7 @@ package id.sajiin.sajiinservices.identity.repository.query;
 import id.sajiin.sajiinservices.shared.core.BaseEntityRequest;
 import id.sajiin.sajiinservices.shared.specification.QueryField;
 import id.sajiin.sajiinservices.shared.specification.QueryOperator;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,6 +11,8 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class PermissionEntityRequest extends BaseEntityRequest {
 
     @QueryField
