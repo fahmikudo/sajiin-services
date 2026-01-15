@@ -6,6 +6,8 @@ import id.sajiin.sajiinservices.store.repository.jpa.ShopJpaRepository;
 import id.sajiin.sajiinservices.store.repository.ShopRepository;
 import id.sajiin.sajiinservices.store.repository.query.ShopEntityRequest;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +48,13 @@ public class ShopRepositoryImpl implements ShopRepository {
 
     @Override
     public Page<Shop> findWithPagination(ShopEntityRequest request) {
-        return null;
+        PageRequest pageRequest = PageRequest.of(request.getPageNumber(), request.getPageSize());
+        Specification<Shop> specification = buildSpecification(request);
+        Page<Shop> shopPage = shopJpaRepository.findAll(specification, pageRequest);
+        if (shopPage.isEmpty()) {
+            return Page.empty();
+        }
+        return new PageImpl<>(shopPage.getContent(), pageRequest, shopPage.getTotalElements());
     }
 
     public Specification<Shop> buildSpecification(ShopEntityRequest request) {

@@ -10,6 +10,7 @@ import id.sajiin.sajiinservices.store.repository.ShopRepository;
 import id.sajiin.sajiinservices.store.repository.query.ShopEntityRequest;
 import id.sajiin.sajiinservices.store.service.ListShopService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -27,8 +28,30 @@ public class ListShopServiceImpl implements ListShopService {
     @Override
     public ListShopResponse execute(ListShopRequest request) throws GeneralException {
         validateRequest(request);
+        if (Boolean.TRUE.equals(request.getPaginated())) {
+            return getListShopWithPagination(request);
+        }
         List<ShopDto> shops = getShops(request);
         return new ListShopResponse(shops);
+    }
+
+    private ListShopResponse getListShopWithPagination(ListShopRequest request) {
+        ShopEntityRequest entityRequest = new ShopEntityRequest();
+        entityRequest.setPageNumber(request.getPagination().getPage());
+        entityRequest.setPageSize(request.getPagination().getSize());
+        entityRequest.setName(request.getSearch());
+
+        Page<Shop> shops = shopRepository.findWithPagination(entityRequest);
+
+        ListShopResponse listShopResponse = new ListShopResponse();
+
+        listShopResponse.setCurrentPage(shops.getNumber() + 1);
+        listShopResponse.setTotalRecord(shops.getTotalElements());
+        listShopResponse.setTotalPage(shops.getTotalPages());
+        listShopResponse.setPageSize(shops.getSize());
+        listShopResponse.setShops(mapToShopDtoList(shops.getContent()));
+
+        return listShopResponse;
     }
 
     private List<ShopDto> getShops(ListShopRequest request) {
