@@ -148,4 +148,11 @@ public class JwtService {
         return calculateExpirationDate(expirationTime).getTime();
     }
 
+    public String extractToken(String authHeader) {
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            return authHeader.substring(7);
+        }
+        throw new IllegalArgumentException("Invalid Authorization header");
+    }
+
 }
